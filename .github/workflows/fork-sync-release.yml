@@ -159,6 +159,10 @@ jobs:
           INTRODB_API_URL: ${{ secrets.INTRODB_API_URL }}
         run: |
           : > keys.properties
+          # QR ile giriş için backend şart. Secret yoksa resmi Nuvio sunucusu kullanılır
+          # (anon anahtar her APK'da gömülü olan herkese açık anahtardır, gizli değildir).
+          NUVIO_BACKEND_URL="${NUVIO_BACKEND_URL:-https://api.nuvio.tv}"
+          NUVIO_BACKEND_KEY="${NUVIO_BACKEND_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzgxNTIxMzQ2LCJleHAiOjE5MzkyMDEzNDZ9.tmQaj682pwzehpqlgCDMnySOqiUvpgRbrE43T4VJpDI}"
           add() { if [ -n "$2" ]; then echo "$1=$2" >> keys.properties; fi; }
           if [ -n "$NUVIO_BACKEND_URL" ]; then
             BACKEND="${NUVIO_BACKEND_URL%/}"
