@@ -76,7 +76,20 @@ print("zaman uzatma bağlantıları yerleştirildi")
 PYEOF
 
 if [ "${DUB_FORK_MODE:-0}" = "1" ]; then
-  echo "fork modu: güncelleyici ve sürüm numarası fork'un kendi ayarlarında bırakıldı"
+  # Güncelleyici deposu iş akışta -PlivetvUpdateRepo ile verilir. Sürüm adı ve numarası ise
+  # fork'un sürümünden türetilir ve iş akışına yazdırılır (VERSION_NAME / BUILD_NUMBER).
+  #   fork 1.2.0-beta.1.3  ->  1.2.0-beta.1.3.dub.1   (uygulamadaki güncelleyici bunu fork'un
+  #   kendi 1.2.0-beta.1.3 sürümünden yeni sayar; fork beta.1.4 çıkarınca 1.2.0-beta.1.4.dub.1 olur)
+  # versionCode = fork kodu x 100 + BUILD_NUMBER. Fork'un kendi derlemeleri 1..49 kullanır diye
+  # eklenti 50'den başlar, böylece aynı sürümde eklentili APK her zaman daha yüksek koddur.
+  FORK_TAG="${DUB_FORK_TAG:?DUB_FORK_TAG gerekli (fork sürümü)}"
+  if [ "$REV" -gt 49 ]; then
+    echo "::error::Aynı fork sürümünde en fazla 49 eklenti derlemesi yapılabilir (REV=$REV)"
+    exit 7
+  fi
+  echo "VERSION_NAME=${FORK_TAG}.dub.${REV}"
+  echo "BUILD_NUMBER=$((50 + REV))"
+  echo "fork modu: güncelleyici deposu ve sürüm adı/numarası iş akışından geliyor"
   exit 0
 fi
 
