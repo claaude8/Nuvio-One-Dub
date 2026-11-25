@@ -1,7 +1,7 @@
 name: Fork senkron + dublaj eklentili release
 
 # zoga2o3-ops/Nuvio-One YENİ BİR SÜRÜM yayınlayınca: o sürümün kodunu al, dub-addon/ eklentisini
-# (ses arama + senkron) üstüne uygula, imzalı APK derle ve BU depoda GitHub Release olarak yayınla.
+# (overlay + append + kancalar: dublaj arama + senkron; bkz. dub-addon/README.md) üstüne uygula, imzalı APK derle ve BU depoda GitHub Release olarak yayınla.
 # Uygulamadaki güncelleyici bu deponun release'ine bakar (-PlivetvUpdateRepo).
 # Çakışma olursa yeni sürüm yayınlanmaz, eskisi çalışmaya devam eder ve issue açılır.
 
@@ -125,7 +125,9 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           title="Dublaj eklentisi güncel Nuvio-One ile birleşemedi"
-          body="Fork sürümü ${{ steps.fork.outputs.ref }} üstüne yamalar uygulanamadı. Yeni APK yayınlanmadı, eski sürüm çalışmaya devam eder.
+          body="Fork sürümü ${{ steps.fork.outputs.ref }} üstüne dublaj kancaları uygulanamadı. Yeni APK yayınlanmadı, eski sürüm çalışmaya devam eder.
+
+          Çözüm: dub-addon/README.md -> Çakışma olursa bölümü. Çalıştırma günlüğünde hangi kancanın yerleşmediği yazar.
 
           Çalıştırma: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
           open_issue="$(gh issue list --state open --search "\"${title}\" in:title" --json number --jq '.[0].number // empty')"
